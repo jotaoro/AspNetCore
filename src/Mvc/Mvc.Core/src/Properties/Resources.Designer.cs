@@ -1760,6 +1760,21 @@ namespace Microsoft.AspNetCore.Mvc.Core
         internal static string FormatObjectResultExecutor_MaxEnumerationExceeded(object p0, object p1)
             => string.Format(CultureInfo.CurrentCulture, GetString("ObjectResultExecutor_MaxEnumerationExceeded"), p0, p1);
 
+        /// <summary>
+        /// '{0}' reached the configured maximum size of the buffer when enumerating a value of type `{1}'. This limit is in place to prevent infinite streams of `IAsyncEnumerable` from continuing indefinitely. If this is not a programming mistake, consider ways to reduce the collection size, or consider manually converting '{1}' into a list rather than increasing the limit.
+        /// </summary>
+        internal static string UnexpectedJsonEnd
+        {
+            get => GetString("UnexpectedJsonEnd");
+        }
+
+        /// <summary>
+        /// '{0}' reached the configured maximum size of the buffer when enumerating a value of type `{1}'. This limit is in place to prevent infinite streams of `IAsyncEnumerable` from continuing indefinitely. If this is not a programming mistake, consider ways to reduce the collection size, or consider manually converting '{1}' into a list rather than increasing the limit.
+        /// </summary>
+        internal static string FormatUnexpectedJsonToken(object p0)
+            => string.Format(CultureInfo.CurrentCulture, GetString("UnexpectedJsonToken"), p0);
+
+
         private static string GetString(string name, params string[] formatterNames)
         {
             var value = _resourceManager.GetString(name);
