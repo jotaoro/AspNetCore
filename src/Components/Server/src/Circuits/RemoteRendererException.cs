@@ -3,12 +3,12 @@
 
 using System;
 
-namespace Microsoft.AspNetCore.Components.Web.Rendering
+namespace Microsoft.AspNetCore.Components.Server.Circuits
 {
     /// <summary>
     /// Represents an exception related to remote rendering.
     /// </summary>
-    public class RemoteRendererException : Exception
+    internal class RemoteRendererException : Exception
     {
         /// <summary>
         /// Constructs an instance of <see cref="RemoteRendererException"/>.
