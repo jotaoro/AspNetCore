@@ -2,7 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.ComponentModel;
+using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 
 namespace Microsoft.AspNetCore.Components
@@ -10,9 +12,10 @@ namespace Microsoft.AspNetCore.Components
     /// <summary>
     /// Represents a reference to a rendered element.
     /// </summary>
+    [JsonConverter(typeof(ElementRefConverter))]
     public readonly struct ElementRef
     {
-        static long _nextIdForWebAssemblyOnly = 1;
+        private static long _nextIdForWebAssemblyOnly = 1;
 
         /// <summary>
         /// Gets a unique identifier for <see cref="ElementRef" />.
@@ -21,14 +24,11 @@ namespace Microsoft.AspNetCore.Components
         /// The Id is unique at least within the scope of a given user/circuit.
         /// This property is public to support Json serialization and should not be used by user code.
         /// </remarks>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public string __internalId { get; }
-
-        internal string Id => __internalId;
+        internal string Id { get; }
 
         private ElementRef(string id)
         {
-            __internalId = id;
+            Id = id;
         }
 
         internal static ElementRef CreateWithUniqueId()
@@ -45,13 +45,28 @@ namespace Microsoft.AspNetCore.Components
                 // fields for ElementRefCaptureId, of which only one would be in use depending
                 // on the platform.
                 var id = Interlocked.Increment(ref _nextIdForWebAssemblyOnly);
-                return id.ToString();
+                return id.ToString(CultureInfo.InvariantCulture);
             }
             else
             {
                 // For remote rendering, it's important not to disclose any cross-user state,
                 // such as the number of IDs that have been assigned.
-                return Guid.NewGuid().ToString("D");
+                return Guid.NewGuid().ToString("D", CultureInfo.InvariantCulture);
+            }
+        }
+
+        internal sealed class ElementRefConverter : JsonConverter<ElementRef>
+        {
+            private static readonly JsonEncodedText IdProperty = JsonEncodedText.Encode("__internalId");
+
+            public override ElementRef Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+                => throw new NotSupportedException();
+
+            public override void Write(Utf8JsonWriter writer, ElementRef value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WriteString(IdProperty, value.Id);
+                writer.WriteEndObject();
             }
         }
     }
