@@ -2191,7 +2191,7 @@ namespace Microsoft.AspNetCore.Components.Test
 
             public string NonParameterProperty { get; set; }
 
-            public void Configure(RenderHandle renderHandle) { }
+            public void Attach(RenderHandle renderHandle) { }
             public Task SetParametersAsync(ParameterCollection parameters)
             {
                 parameters.SetParameterProperties(this);
@@ -2201,7 +2201,7 @@ namespace Microsoft.AspNetCore.Components.Test
 
         private class FakeComponent2 : IComponent
         {
-            public void Configure(RenderHandle renderHandle)
+            public void Attach(RenderHandle renderHandle)
             {
             }
 
@@ -2212,7 +2212,7 @@ namespace Microsoft.AspNetCore.Components.Test
         {
             public int SetParametersCallCount { get; private set; }
 
-            public void Configure(RenderHandle renderHandle)
+            public void Attach(RenderHandle renderHandle)
             {
             }
 
@@ -2228,14 +2228,14 @@ namespace Microsoft.AspNetCore.Components.Test
             public int DisposalCount { get; private set; }
             public void Dispose() => DisposalCount++;
 
-            public void Configure(RenderHandle renderHandle) { }
+            public void Attach(RenderHandle renderHandle) { }
 
             public Task SetParametersAsync(ParameterCollection parameters) => Task.CompletedTask;
         }
 
         private class NonDisposableComponent : IComponent
         {
-            public void Configure(RenderHandle renderHandle) { }
+            public void Attach(RenderHandle renderHandle) { }
 
             public Task SetParametersAsync(ParameterCollection parameters) => Task.CompletedTask;
         }
